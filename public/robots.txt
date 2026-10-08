@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yudisthiroarvel.github.io/sitemap.xml

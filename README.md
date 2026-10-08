@@ -58,6 +58,16 @@ src/
 
 1. Put its images in `src/assets/projects/<slug>/`.
 2. Copy any file in `src/content/projects/` to `<slug>.md` and edit the frontmatter and text.
-3. Run `npm run dev`. The card, the case-study page at `/projects/<slug>/`, and the
-   project count in the hero all update automatically. If a field is missing or
-   misspelled, the build stops and tells you which file and field to fix.
+3. Run `npm run dev`. The card, the case-study page at `/projects/<slug>/`, the
+   sitemap, and the project count in the hero all update automatically. If a field
+   is missing or misspelled, the build stops and tells you which file and field to fix.
+
+### Link preview image
+
+`public/og.png` (1200×630) is what LinkedIn, WhatsApp, and X show when the site is
+shared. Its source is `design/og-card.html`. After editing it, regenerate the PNG
+from the project folder in PowerShell (uses Microsoft Edge in headless mode):
+
+```powershell
+& "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new --hide-scrollbars --allow-file-access-from-files --virtual-time-budget=4000 --window-size=1200,630 --screenshot="$PWD\public\og.png" "file:///$($PWD -replace '\\','/')/design/og-card.html"
+```
