@@ -1,0 +1,262 @@
+---
+import Button from "../ui/Button.astro";
+import { navLinks, site } from "../../data/site";
+
+const [initial, ...rest] = site.shortName;
+---
+
+<header class="nav" data-nav>
+  <div class="nav__inner container">
+    <a href="#top" class="logo" aria-label={`${site.shortName}, back to top`}>
+      <span class="logo__initial">{initial}</span>{rest.join("")}<span
+        class="cursor logo__cursor"
+        aria-hidden="true"></span>
+    </a>
+
+    <nav class="nav__menu" id="nav-menu" aria-label="Primary">
+      <ul class="nav__links" role="list">
+        {
+          navLinks.map((link, index) => (
+            <li>
+              <a href={link.href} class="nav__link">
+                <span class="nav__index">{String(index + 1).padStart(2, "0")}</span>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Button href="#contact" size="sm">Let's talk</Button>
+    </nav>
+
+    <button
+      class="nav__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+      aria-label="Open menu"
+      data-nav-toggle
+    >
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>("[data-nav]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
+  const desktop = window.matchMedia("(min-width: 768px)");
+
+  if (nav && toggle) {
+    const setOpen = (open: boolean) => {
+      nav.toggleAttribute("data-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      document.documentElement.classList.toggle("is-scroll-locked", open);
+    };
+
+    toggle.addEventListener("click", () => setOpen(!nav.hasAttribute("data-open")));
+
+    nav.querySelectorAll("#nav-menu a").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && nav.hasAttribute("data-open")) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    desktop.addEventListener("change", () => setOpen(false));
+
+    const updateScrolled = () => nav.toggleAttribute("data-scrolled", window.scrollY > 8);
+    updateScrolled();
+    window.addEventListener("scroll", updateScrolled, { passive: true });
+  }
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    height: var(--nav-height);
+    border-bottom: 2px solid transparent;
+    transition:
+      background-color var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  .nav[data-scrolled],
+  .nav[data-open] {
+    background-color: rgb(12 9 20 / 0.8);
+    border-color: var(--color-line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  /* ---------- Logo ---------- */
+  .logo {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: baseline;
+    font-family: var(--font-pixel);
+    font-size: 1.85rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+
+  .logo__initial {
+    font-size: 1.6em;
+    color: var(--color-accent);
+    text-shadow: 3px 3px 0 var(--color-primary-strong);
+    margin-right: 0.02em;
+  }
+
+  .logo__cursor {
+    background: var(--color-primary);
+  }
+
+  /* ---------- Links ---------- */
+  .nav__links {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .nav__link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4em;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    transition:
+      color var(--duration-fast),
+      background-color var(--duration-fast);
+  }
+
+  .nav__index {
+    font-size: 0.75em;
+    color: var(--color-primary);
+    transition: color var(--duration-fast);
+  }
+
+  /* Inverted "selected" block, like a highlighted item in an old terminal menu */
+  .nav__link:hover {
+    color: var(--color-on-accent);
+    background-color: var(--color-primary);
+  }
+
+  .nav__link:hover .nav__index {
+    color: var(--color-on-accent);
+  }
+
+  /* ---------- Mobile toggle ---------- */
+  .nav__toggle {
+    position: relative;
+    z-index: 2;
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 2px solid var(--color-text);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .nav__toggle-bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.1rem;
+    height: 2px;
+    background: currentColor;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .nav__toggle-bar:first-child {
+    transform: translate(-50%, -4px);
+  }
+
+  .nav__toggle-bar:last-child {
+    transform: translate(-50%, 3px);
+  }
+
+  .nav[data-open] .nav__toggle-bar:first-child {
+    transform: translate(-50%, 0) rotate(45deg);
+  }
+
+  .nav[data-open] .nav__toggle-bar:last-child {
+    transform: translate(-50%, 0) rotate(-45deg);
+  }
+
+  @media (min-width: 768px) {
+    .nav__menu {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+    }
+  }
+
+  /* Mobile: the menu becomes a full-screen overlay */
+  @media (max-width: 767.98px) {
+    .nav__toggle {
+      display: block;
+    }
+
+    .nav__menu {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: var(--space-10);
+      padding: var(--nav-height) var(--gutter) var(--space-12);
+      background:
+        radial-gradient(70% 50% at 90% 0%, rgb(124 58 237 / 0.3), transparent 70%),
+        var(--color-bg);
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity var(--duration-base) var(--ease-out),
+        visibility var(--duration-base);
+    }
+
+    .nav[data-open] .nav__menu {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav__links {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .nav__link {
+      padding: var(--space-1) var(--space-2);
+      font-family: var(--font-pixel);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .nav__index {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+    }
+  }
+</style>

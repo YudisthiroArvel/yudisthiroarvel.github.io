@@ -1,0 +1,103 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "ghost";
+  size?: "md" | "sm";
+  arrow?: boolean;
+  external?: boolean;
+}
+
+const { href, variant = "primary", size = "md", arrow = false, external = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={["btn", `btn--${variant}`, `btn--${size}`]}
+  {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+>
+  <span><slot /></span>
+  {
+    arrow && (
+      <svg class="btn__arrow" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4" />
+      </svg>
+    )
+  }
+</a>
+
+<style>
+  /*
+    Retro "physical" button: a solid offset shadow sits behind it.
+    Hover lifts the button away from its shadow; active presses it flat.
+  */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    border: 2px solid var(--color-text);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .btn--md {
+    padding: 0.95rem 1.4rem;
+    font-size: var(--text-sm);
+  }
+
+  .btn--sm {
+    padding: 0.6rem 0.95rem;
+    font-size: var(--text-xs);
+  }
+
+  .btn--primary {
+    color: var(--color-on-accent);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    box-shadow: 4px 4px 0 0 var(--color-primary-strong);
+  }
+
+  .btn--primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--color-primary-strong);
+  }
+
+  .btn--ghost {
+    color: var(--color-text);
+    background: var(--color-bg);
+    box-shadow: 4px 4px 0 0 var(--color-line-strong);
+  }
+
+  .btn--ghost:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--color-primary);
+  }
+
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  .btn__arrow {
+    width: 1.1em;
+    height: 1.1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: square;
+    transition: transform var(--duration-base) var(--ease-snap);
+  }
+
+  .btn:hover .btn__arrow {
+    transform: translateX(3px);
+  }
+</style>

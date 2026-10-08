@@ -1,0 +1,486 @@
+---
+import Button from "../ui/Button.astro";
+import Marquee from "../ui/Marquee.astro";
+import Window from "../ui/Window.astro";
+import { heroHighlights, profileFacts, site, techTicker } from "../../data/site";
+
+const whoami = "whoami";
+
+// Terminal timeline (ms): the window opens, the command is typed,
+// then each line of output prints after the previous one.
+const terminal = { command: "cat arvel.yml", typeDelay: 1200, typeDuration: 800 };
+const outputStart = terminal.typeDelay + terminal.typeDuration + 150;
+const lineStep = 110;
+const promptDelay = outputStart + profileFacts.length * lineStep;
+
+const stickers = [
+  { text: "ICPC '25 ★", variant: "lime" },
+  { text: "Hello, World!", variant: "pink" },
+  { text: "powered by music ♪", variant: "violet" },
+];
+const stickerStart = promptDelay + 250;
+---
+
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__backdrop" aria-hidden="true">
+    <div class="hero__glow"></div>
+    <div class="hero__floor"><div class="hero__floor-grid"></div></div>
+  </div>
+
+  <div class="hero__inner container">
+    <div class="hero__head">
+      <p class="hero__prompt reveal">
+        <span class="hero__path">arvel@binus:~$</span>
+        <span class="typewriter" style={`--chars: ${whoami.length}; --type-delay: 300ms`}>
+          {whoami}
+        </span>
+      </p>
+
+      <p class="hero__name reveal" style="--delay: 700ms">{site.name}</p>
+
+      <h1 id="hero-title" class="hero__title reveal" style="--delay: 820ms">
+        Software engineer by major.<br />
+        <span class="hero__pixel">AI nerd</span> by choice.
+      </h1>
+    </div>
+
+    <div class="hero__copy">
+      <p class="hero__intro reveal" style="--delay: 940ms">{site.intro}</p>
+
+      <div class="hero__actions reveal" style="--delay: 1060ms">
+        <Button href="#projects" arrow>View my work</Button>
+        <Button href={`mailto:${site.email}`} variant="ghost">Get in touch</Button>
+      </div>
+
+      <div class="hero__meta reveal" style="--delay: 1160ms">
+        <p class="hero__status">
+          <span class="hero__status-dot" aria-hidden="true"></span>
+          {site.availability}
+        </p>
+        <a class="hero__link" href={site.linkedin} target="_blank" rel="noopener noreferrer">
+          LinkedIn ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__visual reveal" style="--delay: 400ms">
+      <Window title="terminal — arvel.yml">
+        <div class="term">
+          <p class="term__line">
+            <span class="term__prompt">$</span>
+            <span
+              class="typewriter"
+              style={`--chars: ${terminal.command.length}; --type-delay: ${terminal.typeDelay}ms; --type-duration: ${terminal.typeDuration}ms`}
+            >
+              {terminal.command}
+            </span>
+          </p>
+          <dl class="term__yaml">
+            {
+              profileFacts.map(({ key, value }, index) => (
+                <div class="term__line term__output" style={`--delay: ${outputStart + index * lineStep}ms`}>
+                  <dt>{key}:</dt>
+                  <dd class={`term__value term__value--${typeof value}`}>{String(value)}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <p class="term__line term__output" style={`--delay: ${promptDelay}ms`}>
+            <span class="term__prompt">$</span>
+            <span class="cursor" aria-hidden="true"></span>
+          </p>
+        </div>
+      </Window>
+
+      {
+        stickers.map((sticker, index) => (
+          <span
+            class={`sticker sticker--${sticker.variant}`}
+            style={`animation-delay: ${stickerStart + index * 150}ms`}
+            aria-hidden="true"
+          >
+            {sticker.text}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+
+  <ul class="hero__stats container" role="list">
+    {
+      heroHighlights.map((item, index) => (
+        <li class="stat reveal" style={`--delay: ${1250 + index * 100}ms`}>
+          <span class="stat__index">[{String(index + 1).padStart(2, "0")}]</span>
+          <span class="stat__value">{item.value}</span>
+          <span class="stat__label">{item.label}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="hero__marquee">
+    <Marquee items={techTicker} />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    padding-block: calc(var(--nav-height) + var(--space-12)) var(--space-10);
+    overflow: hidden;
+  }
+
+  /* ---------- Background: glow + synthwave floor ---------- */
+  .hero__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .hero__glow {
+    position: absolute;
+    width: 70vmax;
+    height: 70vmax;
+    top: -35vmax;
+    right: -20vmax;
+    background: radial-gradient(closest-side, rgb(124 58 237 / 0.3), transparent);
+  }
+
+  .hero__floor {
+    position: absolute;
+    inset: auto 0 0;
+    height: 48%;
+    overflow: hidden;
+    perspective: 280px;
+    perspective-origin: 50% 0%;
+    mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.6) 40%, transparent 92%);
+    opacity: 0.5;
+  }
+
+  .hero__floor-grid {
+    position: absolute;
+    inset: -64px -60% 0;
+    background-image:
+      linear-gradient(var(--color-primary-strong) 2px, transparent 2px),
+      linear-gradient(90deg, var(--color-primary-strong) 2px, transparent 2px);
+    background-size: 64px 64px;
+    transform-origin: 50% 100%;
+    animation: floor-scroll 3s linear infinite;
+  }
+
+  @keyframes floor-scroll {
+    from {
+      transform: rotateX(64deg) translateY(0);
+    }
+    to {
+      transform: rotateX(64deg) translateY(64px);
+    }
+  }
+
+  /* ---------- Layout ---------- */
+  /* Headline spans the full width; intro and terminal sit side by side below it */
+  .hero__inner {
+    display: grid;
+    grid-template-areas:
+      "head"
+      "copy"
+      "visual";
+    gap: var(--space-12) var(--space-16);
+    align-items: center;
+  }
+
+  @media (min-width: 960px) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "head head"
+        "copy visual";
+    }
+  }
+
+  .hero__head {
+    grid-area: head;
+  }
+
+  .hero__copy {
+    grid-area: copy;
+  }
+
+  .hero__visual {
+    grid-area: visual;
+  }
+
+  /* ---------- Copy ---------- */
+  .hero__prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.6ch;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .hero__path {
+    color: var(--color-primary);
+  }
+
+  .hero__name {
+    margin-top: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .hero__title {
+    margin-top: var(--space-6);
+    font-size: var(--text-display);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .hero__pixel {
+    font-family: var(--font-pixel);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: var(--color-accent);
+    text-shadow: 4px 4px 0 var(--color-primary-strong);
+  }
+
+  .hero__intro {
+    max-width: 54ch;
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .hero__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .hero__link {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-underline-offset: 4px;
+    transition: color var(--duration-fast);
+  }
+
+  .hero__link:hover {
+    color: var(--color-accent);
+  }
+
+  .hero__status-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    background: var(--color-accent);
+    animation: blink 1.6s steps(1) infinite;
+  }
+
+  /* ---------- Terminal window ---------- */
+  .hero__visual {
+    position: relative;
+    width: min(100%, 460px);
+    margin-inline: auto;
+  }
+
+  .term {
+    font-family: var(--font-mono);
+    font-size: clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
+    line-height: 1.9;
+  }
+
+  .term__prompt {
+    color: var(--color-accent);
+  }
+
+  .term__yaml {
+    margin-block: var(--space-1);
+  }
+
+  .term__line {
+    display: flex;
+    gap: 1ch;
+  }
+
+  /*
+    Each output line stays hidden until its own --delay, then appears instantly.
+    `backwards` only styles the waiting period; afterwards the normal (visible) style
+    takes over, so the end state never depends on the animation reaching exactly 100%.
+  */
+  .term__output {
+    animation: print 1ms var(--delay) backwards;
+  }
+
+  @keyframes print {
+    from {
+      visibility: hidden;
+    }
+  }
+
+  .term__line dt {
+    color: var(--color-primary);
+  }
+
+  .term__line dd {
+    margin: 0;
+  }
+
+  .term__value--string {
+    color: var(--color-text);
+  }
+
+  .term__value--number {
+    color: var(--color-pink);
+  }
+
+  .term__value--boolean {
+    color: var(--color-accent);
+  }
+
+  /* ---------- Stickers ---------- */
+  .sticker {
+    position: absolute;
+    z-index: 2;
+    padding: 0.4rem 0.75rem;
+    border: 2px solid var(--color-bg);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-pixel);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-on-accent);
+    white-space: nowrap;
+    box-shadow: 3px 3px 0 0 var(--color-bg);
+    animation: slap 0.45s var(--ease-snap) backwards;
+    transition: scale var(--duration-base) var(--ease-snap);
+  }
+
+  .sticker:hover {
+    scale: 1.08;
+  }
+
+  .sticker--lime {
+    top: -1rem;
+    right: -0.75rem;
+    rotate: 7deg;
+    background: var(--color-accent);
+  }
+
+  .sticker--pink {
+    bottom: -1.1rem;
+    left: -1.25rem;
+    rotate: -6deg;
+    background: var(--color-pink);
+  }
+
+  .sticker--violet {
+    top: 58%;
+    right: -1.25rem;
+    rotate: 4deg;
+    background: var(--color-primary);
+  }
+
+  @keyframes slap {
+    from {
+      opacity: 0;
+      transform: scale(1.8);
+    }
+  }
+
+  /* ---------- Stats ---------- */
+  .hero__stats {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-20);
+  }
+
+  @media (min-width: 768px) {
+    .hero__stats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+    }
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-5);
+    border: 2px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    background: rgb(21 16 33 / 0.8);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  .stat:hover {
+    transform: translate(-3px, -3px);
+    border-color: var(--color-text);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .stat__index {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .stat__value {
+    margin-top: var(--space-2);
+    font-family: var(--font-pixel);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .stat__label {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .hero__marquee {
+    margin-top: var(--space-16);
+  }
+
+  @media (max-width: 959.98px) {
+    .sticker--pink {
+      left: -0.5rem;
+    }
+
+    .sticker--violet {
+      top: auto;
+      bottom: -1.1rem;
+      right: -0.25rem;
+    }
+  }
+</style>

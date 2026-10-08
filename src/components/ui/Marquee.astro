@@ -1,0 +1,74 @@
+---
+// Endless scrolling text band. The list is rendered twice so the loop is seamless;
+// the second copy is hidden from screen readers to avoid reading it twice.
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="marquee">
+  <div class="marquee__track">
+    {
+      [false, true].map((isCopy) => (
+        <ul class="marquee__list" role="list" aria-hidden={isCopy ? "true" : undefined}>
+          {items.map((item) => (
+            <li class="marquee__item">{item}</li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    width: 104%;
+    margin-left: -2%;
+    overflow: hidden;
+    border-block: 2px solid var(--color-bg);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    rotate: -1.5deg;
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 45s linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__list {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .marquee__item {
+    display: flex;
+    align-items: center;
+    padding-block: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .marquee__item::after {
+    content: "✦";
+    margin-inline: 1.5rem;
+    color: var(--color-primary-strong);
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

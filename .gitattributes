@@ -1,0 +1,11 @@
+# Store and check out text files with LF line endings on every OS,
+# so the repo looks the same on Windows, macOS, Linux, and GitHub's build servers.
+* text=auto eol=lf
+
+# Binary files: never touch
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.woff2 binary
