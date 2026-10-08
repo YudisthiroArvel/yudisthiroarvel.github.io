@@ -1,0 +1,47 @@
+---
+import ProjectCard from "../projects/ProjectCard.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import { getSortedProjects } from "../../lib/projects";
+
+const projects = await getSortedProjects();
+---
+
+<section class="section" id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <SectionHeading
+      id="projects-title"
+      index="02"
+      label="projects"
+      title="Selected"
+      accent="works"
+      description="What I built, the part I owned, and what each one taught me."
+    />
+
+    <ul class="projects" role="list">
+      {
+        projects.map((project) => (
+          <li class:list={["projects__item", { "projects__item--wide": project.data.featured }]} data-reveal>
+            <ProjectCard project={project} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .projects {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  @media (min-width: 768px) {
+    .projects {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .projects__item--wide {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

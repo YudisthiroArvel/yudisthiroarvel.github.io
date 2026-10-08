@@ -7,7 +7,7 @@ const [initial, ...rest] = site.shortName;
 
 <header class="nav" data-nav>
   <div class="nav__inner container">
-    <a href="#top" class="logo" aria-label={`${site.shortName}, back to top`}>
+    <a href="/#top" class="logo" aria-label={`${site.shortName}, home`}>
       <span class="logo__initial">{initial}</span>{rest.join("")}<span
         class="cursor logo__cursor"
         aria-hidden="true"></span>
@@ -26,7 +26,7 @@ const [initial, ...rest] = site.shortName;
           ))
         }
       </ul>
-      <Button href="#contact" size="sm">Let's talk</Button>
+      <Button href="/#contact" size="sm">Let's talk</Button>
     </nav>
 
     <button

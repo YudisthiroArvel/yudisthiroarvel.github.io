@@ -13,7 +13,7 @@ const { href, variant = "primary", size = "md", arrow = false, external = false 
 <a
   href={href}
   class:list={["btn", `btn--${variant}`, `btn--${size}`]}
-  {...(external && { target: "_blank", rel: "noopener noreferrer" })}
+  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 >
   <span><slot /></span>
   {

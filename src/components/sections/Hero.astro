@@ -1,8 +1,18 @@
 ---
+import { getCollection } from "astro:content";
 import Button from "../ui/Button.astro";
 import Marquee from "../ui/Marquee.astro";
 import Window from "../ui/Window.astro";
 import { heroHighlights, profileFacts, site, techTicker } from "../../data/site";
+
+const works = await getCollection("projects");
+const highlights = [
+  ...heroHighlights,
+  {
+    value: `${works.length} Works`,
+    label: "Across backend, mobile, UI/UX, research, and competitive programming",
+  },
+];
 
 const whoami = "whoami";
 
@@ -40,7 +50,7 @@ const stickerStart = promptDelay + 250;
 
       <h1 id="hero-title" class="hero__title reveal" style="--delay: 820ms">
         Software engineer by major.<br />
-        <span class="hero__pixel">AI nerd</span> by choice.
+        <span class="text-pixel">AI nerd</span> by choice.
       </h1>
     </div>
 
@@ -49,7 +59,7 @@ const stickerStart = promptDelay + 250;
 
       <div class="hero__actions reveal" style="--delay: 1060ms">
         <Button href="#projects" arrow>View my work</Button>
-        <Button href={`mailto:${site.email}`} variant="ghost">Get in touch</Button>
+        <Button href="#contact" variant="ghost">Get in touch</Button>
       </div>
 
       <div class="hero__meta reveal" style="--delay: 1160ms">
@@ -108,7 +118,7 @@ const stickerStart = promptDelay + 250;
 
   <ul class="hero__stats container" role="list">
     {
-      heroHighlights.map((item, index) => (
+      highlights.map((item, index) => (
         <li class="stat reveal" style={`--delay: ${1250 + index * 100}ms`}>
           <span class="stat__index">[{String(index + 1).padStart(2, "0")}]</span>
           <span class="stat__value">{item.value}</span>
@@ -243,15 +253,6 @@ const stickerStart = promptDelay + 250;
     font-size: var(--text-display);
     line-height: 1;
     letter-spacing: -0.04em;
-  }
-
-  .hero__pixel {
-    font-family: var(--font-pixel);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-    color: var(--color-accent);
-    text-shadow: 4px 4px 0 var(--color-primary-strong);
   }
 
   .hero__intro {

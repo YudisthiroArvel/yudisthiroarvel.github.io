@@ -1,0 +1,167 @@
+---
+import Button from "../ui/Button.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Window from "../ui/Window.astro";
+import { site } from "../../data/site";
+
+const subject = "Let's work together";
+const mailto = `mailto:${site.email}?subject=${encodeURIComponent(subject)}`;
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <div class="container contact__grid">
+    <SectionHeading
+      id="contact-title"
+      index="04"
+      label="contact"
+      title="Let's build"
+      accent="something"
+      description="I'm open to internships and full-time roles in software engineering and AI. Email is the fastest way to reach me."
+    />
+
+    <div data-reveal>
+      <Window title="new_message.txt">
+        <dl class="msg">
+          <div class="msg__row">
+            <dt>to:</dt>
+            <dd class="msg__email">
+              <a href={mailto}>{site.email}</a>
+              <button class="msg__copy" type="button" data-copy={site.email}>
+                <span data-copy-label>copy</span>
+              </button>
+            </dd>
+          </div>
+          <div class="msg__row">
+            <dt>subject:</dt>
+            <dd>{subject}</dd>
+          </div>
+        </dl>
+        <p class="msg__body">Hi Arvel, I saw your portfolio and…<span class="cursor" aria-hidden="true"></span></p>
+        <div class="msg__actions">
+          <Button href={mailto} arrow>Send email</Button>
+          <Button href={site.linkedin} variant="ghost" external>LinkedIn ↗</Button>
+        </div>
+      </Window>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+    const label = button.querySelector<HTMLElement>("[data-copy-label]");
+    if (!label) return;
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? "");
+        label.textContent = "copied ✓";
+      } catch {
+        label.textContent = "press ctrl+c";
+      }
+      window.setTimeout(() => (label.textContent = "copy"), 2000);
+    });
+  });
+</script>
+
+<style>
+  .contact {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .contact::before {
+    content: "";
+    position: absolute;
+    inset: auto -20% -40% -20%;
+    z-index: -1;
+    height: 80%;
+    background: radial-gradient(50% 60% at 50% 100%, rgb(124 58 237 / 0.28), transparent 70%);
+  }
+
+  .contact__grid {
+    display: grid;
+    gap: var(--space-8);
+    align-items: center;
+  }
+
+  @media (min-width: 960px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-16);
+    }
+  }
+
+  .msg {
+    display: grid;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .msg__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) 1ch;
+    padding-block: var(--space-3);
+    border-bottom: 2px dashed var(--color-line);
+  }
+
+  .msg__row dt {
+    color: var(--color-primary);
+  }
+
+  .msg__row dd {
+    margin: 0;
+  }
+
+  .msg__email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .msg__email a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+  }
+
+  .msg__email a:hover {
+    color: var(--color-accent);
+  }
+
+  .msg__copy {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    transition:
+      color var(--duration-fast),
+      border-color var(--duration-fast);
+  }
+
+  .msg__copy:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .msg__body {
+    margin-top: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .msg__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+</style>

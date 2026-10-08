@@ -1,0 +1,125 @@
+---
+// Picks the right visual for a project:
+// - several phone screenshots → shown side by side
+// - otherwise the cover, cropped ("cover") or shown whole ("contain")
+import { Image } from "astro:assets";
+import type { Project } from "../../lib/projects";
+
+interface Props {
+  data: Project["data"];
+  variant?: "card" | "full";
+}
+
+const { data, variant = "card" } = Astro.props;
+const isCard = variant === "card";
+const screens = isCard ? data.screens.slice(0, 3) : data.screens;
+const kind = screens.length > 1 ? "phones" : data.coverFit;
+---
+
+<div class:list={["media", `media--${kind}`, `media--${variant}`]}>
+  {
+    kind === "phones" ? (
+      screens.map((screen, index) => (
+        <Image
+          src={screen}
+          alt={`${data.title}, screen ${index + 1}`}
+          widths={isCard ? [240, 480] : [320, 640]}
+          sizes={isCard ? "(min-width: 768px) 15vw, 28vw" : "(min-width: 768px) 220px, 40vw"}
+          loading="lazy"
+        />
+      ))
+    ) : (
+      <Image
+        src={data.cover}
+        alt={`${data.title} preview`}
+        widths={isCard ? [640, 960, 1280] : [960, 1600, 2400]}
+        sizes={isCard ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 1200px) 1200px, 100vw"}
+        loading={isCard ? "lazy" : "eager"}
+      />
+    )
+  }
+</div>
+
+<style>
+  .media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .media img {
+    display: block;
+  }
+
+  /* Cropped cover, anchored to the top where the interesting UI usually is */
+  .media--cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .media--full.media--cover img {
+    height: auto;
+  }
+
+  /* Whole image on a paper-coloured background: certificates, diagrams */
+  .media--contain {
+    background: #f4efff;
+  }
+
+  .media--card.media--contain img {
+    position: absolute;
+    inset: 6%;
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+  }
+
+  .media--full.media--contain {
+    display: grid;
+    place-items: center;
+    padding: var(--space-8);
+  }
+
+  .media--full.media--contain img {
+    max-width: 100%;
+    height: auto;
+    max-height: 75vh;
+  }
+
+  /* Phone screenshots in a row, peeking up from the bottom edge */
+  .media--phones {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4%;
+    padding: 7% 6% 0;
+    background:
+      radial-gradient(70% 90% at 50% 120%, rgb(124 58 237 / 0.5), transparent 70%),
+      var(--color-bg-elevated);
+  }
+
+  .media--phones img {
+    width: 27%;
+    height: auto;
+    border: 2px solid var(--color-line-strong);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 0 var(--color-bg);
+  }
+
+  .media--card.media--phones img:nth-child(2) {
+    margin-top: -3%;
+  }
+
+  .media--full.media--phones {
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    padding: var(--space-8);
+  }
+
+  .media--full.media--phones img {
+    width: clamp(130px, 22%, 220px);
+  }
+</style>

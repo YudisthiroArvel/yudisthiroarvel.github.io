@@ -1,0 +1,163 @@
+---
+import Chip from "../ui/Chip.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Window from "../ui/Window.astro";
+import { bio } from "../../data/site";
+import { focusAreas, skillGroups } from "../../data/skills";
+---
+
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="container">
+    <SectionHeading id="about-title" index="01" label="about" title="Curious about the" accent="why" />
+
+    <div class="about">
+      <div class="about__story" data-reveal>
+        <p class="about__lead">{bio.lead}</p>
+        {bio.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+
+      <ul class="focus" role="list">
+        {
+          focusAreas.map((area, index) => (
+            <li class="focus__item" data-reveal>
+              <span class="focus__index">{String(index + 1).padStart(2, "0")}</span>
+              <h3 class="focus__title">{area.title}</h3>
+              <p class="focus__text">{area.description}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="stack" data-reveal>
+      <Window title="~/stack — ls -R">
+        <dl class="stack__list">
+          {
+            skillGroups.map((group) => (
+              <div class="stack__row">
+                <dt>{group.label}/</dt>
+                <dd>
+                  <ul class="stack__chips" role="list">
+                    {group.items.map((item) => (
+                      <li>
+                        <Chip>{item}</Chip>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </Window>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-12);
+  }
+
+  @media (min-width: 960px) {
+    .about {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+  }
+
+  .about__story {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 62ch;
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+  }
+
+  .about__lead {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+
+  .focus {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 600px) and (max-width: 959.98px) {
+    .focus {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .focus__item {
+    position: relative;
+    padding: var(--space-5) var(--space-5) var(--space-5) var(--space-16);
+    border: 2px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .focus__index {
+    position: absolute;
+    top: var(--space-5);
+    left: var(--space-5);
+    font-family: var(--font-pixel);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+
+  .focus__title {
+    font-size: var(--text-base);
+  }
+
+  .focus__text {
+    margin-top: var(--space-1);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .stack {
+    margin-top: var(--space-16);
+  }
+
+  .stack__list {
+    display: grid;
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .stack__row {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  @media (min-width: 700px) {
+    .stack__row {
+      grid-template-columns: 9rem 1fr;
+      align-items: baseline;
+    }
+  }
+
+  .stack__row dt {
+    color: var(--color-primary);
+  }
+
+  .stack__row dd {
+    margin: 0;
+  }
+
+  .stack__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+</style>

@@ -15,6 +15,16 @@ export const site = {
     "Portfolio of Wahyu Aditya Yudisthiro Arvel Braswito Sapardi, a Software Engineering student at BINUS University with a passion for AI, building backends, mobile apps, and research.",
 };
 
+/** About section copy */
+export const bio = {
+  lead: "I like knowing why a system works, not just that it works.",
+  paragraphs: [
+    "I'm a fifth-semester Software Engineering student at BINUS University. Most of my work so far lives in the back end and in system design: modelling an order lifecycle as a state machine, splitting modules into clean layers, and choosing a stack I can defend to the team that builds on it.",
+    "Outside coursework I write research and compete in algorithmic programming. ICPC taught me that a correct solution that is too slow is simply wrong; writing an IEEE paper taught me that a claim only counts if you can back it up.",
+    "Lately I've been pulled toward Artificial Intelligence, from wiring the Gemini API into a counselling chatbot to wanting to understand the models behind it. That's where I'm heading next. And whatever I'm building, there's music playing.",
+  ],
+};
+
 export interface SocialLink {
   label: string;
   href: string;
@@ -31,11 +41,12 @@ export interface NavLink {
   href: string;
 }
 
+// Links start with "/" so they also work from project detail pages.
 export const navLinks: NavLink[] = [
-  { label: "about", href: "#about" },
-  { label: "projects", href: "#projects" },
-  { label: "journey", href: "#journey" },
-  { label: "contact", href: "#contact" },
+  { label: "about", href: "/#about" },
+  { label: "projects", href: "/#projects" },
+  { label: "journey", href: "/#journey" },
+  { label: "contact", href: "/#contact" },
 ];
 
 /** Shown as a mini YAML file in the hero terminal window. */
@@ -53,10 +64,10 @@ export interface Highlight {
   label: string;
 }
 
+// The hero adds a third highlight with the live project count from src/content/projects.
 export const heroHighlights: Highlight[] = [
   { value: "Top 40", label: "ICPC Asia Jakarta National Contest 2025 · Honorable Mention" },
   { value: "First Author", label: "IEEE-format paper on algorithmic task prioritisation" },
-  { value: "7 Works", label: "Across backend, mobile, UI/UX, research, and competitive programming" },
 ];
 
 /** Scrolling ticker under the hero; tools taken from the projects so far. */

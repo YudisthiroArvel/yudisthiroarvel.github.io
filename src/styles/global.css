@@ -114,6 +114,35 @@ html.is-scroll-locked {
   margin-inline: auto;
 }
 
+.section {
+  padding-block: clamp(4rem, 3rem + 4vw, 7rem);
+}
+
+/* Lime pixel-font accent used for key words in headings */
+.text-pixel {
+  font-family: var(--font-pixel);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--color-accent);
+  text-shadow: 0.05em 0.05em 0 var(--color-primary-strong);
+}
+
+/*
+  Scroll reveal: elements with data-reveal fade up as they enter the viewport.
+  Pure CSS (scroll-driven animations); browsers without support simply show the
+  content immediately, so nothing can ever stay hidden.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal] {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

@@ -28,14 +28,18 @@ and publishes it to GitHub Pages. No manual upload needed.
 .github/workflows/      CI: automatic build + deploy to GitHub Pages
 public/                 Static files copied as-is (favicon, resume PDF)
 src/
-  assets/               Images that Astro optimizes at build time
+  assets/projects/      Project screenshots, optimized to WebP at build time
   components/
     layout/             Site-wide pieces (Navbar, Footer)
-    sections/           One component per page section (Hero, About, ...)
-    ui/                 Reusable building blocks (Button, Window, Marquee)
-  data/site.ts          Personal info: name, links, highlights, tech ticker
+    projects/           ProjectCard and ProjectMedia
+    sections/           One component per homepage section
+    ui/                 Reusable building blocks (Button, Window, Chip, ...)
+  content/projects/     One Markdown file per project (the case studies)
+  content.config.ts     Schema that validates every project file
+  data/                 site.ts (profile, links), skills.ts, journey.ts
   layouts/              Page shell: <head>, fonts, global styles
-  pages/                Every file here becomes a URL
+  lib/projects.ts       Shared helpers for loading and sorting projects
+  pages/                index.astro (home) and projects/[slug].astro (case studies)
   styles/
     tokens.css          Design tokens: colors, type scale, spacing, motion
     global.css          Reset, base styles, utilities, shared animations
@@ -43,5 +47,17 @@ src/
 
 ## Updating content
 
-- Personal details, links, hero highlights, tech ticker: `src/data/site.ts`
-- Colors, fonts, spacing: `src/styles/tokens.css`
+| To change…                              | Edit                                   |
+| --------------------------------------- | -------------------------------------- |
+| Name, email, links, hero text           | `src/data/site.ts`                     |
+| Skills and focus areas                  | `src/data/skills.ts`                   |
+| Education and timeline milestones       | `src/data/journey.ts`                  |
+| Colors, fonts, spacing                  | `src/styles/tokens.css`                |
+
+### Adding a project
+
+1. Put its images in `src/assets/projects/<slug>/`.
+2. Copy any file in `src/content/projects/` to `<slug>.md` and edit the frontmatter and text.
+3. Run `npm run dev`. The card, the case-study page at `/projects/<slug>/`, and the
+   project count in the hero all update automatically. If a field is missing or
+   misspelled, the build stops and tells you which file and field to fix.

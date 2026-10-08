@@ -1,0 +1,188 @@
+---
+import Chip from "../ui/Chip.astro";
+import ProjectMedia from "./ProjectMedia.astro";
+import { projectUrl, type Project } from "../../lib/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+---
+
+<article class:list={["card", { "card--featured": data.featured }]}>
+  <div class="card__bar" aria-hidden="true">
+    <span class="card__dot"></span>
+    <span class="card__file">{project.id}.md</span>
+    <span class="card__year">{data.year}</span>
+  </div>
+
+  <div class="card__media">
+    <ProjectMedia data={data} />
+  </div>
+
+  <div class="card__body">
+    <p class="card__role">{data.role}</p>
+    <h3 class="card__title">
+      <a href={projectUrl(project)} class="card__link">{data.title}</a>
+    </h3>
+    <p class="card__summary">{data.summary}</p>
+    <ul class="card__chips" role="list">
+      {
+        data.stack.slice(0, 4).map((item) => (
+          <li>
+            <Chip>{item}</Chip>
+          </li>
+        ))
+      }
+    </ul>
+    <span class="card__cta" aria-hidden="true">read case study →</span>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    height: 100%;
+    border: 2px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    overflow: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      box-shadow var(--duration-base) var(--ease-out),
+      border-color var(--duration-base) var(--ease-out);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    transform: translate(-4px, -4px);
+    border-color: var(--color-text);
+    box-shadow: var(--shadow-hard);
+  }
+
+  /* Mini title bar, echoing the retro Window component */
+  .card__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 2px solid var(--color-line-strong);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-subtle);
+  }
+
+  .card__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 2px solid currentColor;
+  }
+
+  .card__year {
+    margin-left: auto;
+    color: var(--color-accent);
+  }
+
+  .card__media {
+    aspect-ratio: 16 / 10;
+    border-bottom: 2px solid var(--color-line-strong);
+  }
+
+  .card__media :global(img) {
+    transition: transform 600ms var(--ease-out);
+  }
+
+  .card:hover .card__media :global(img) {
+    transform: scale(1.03);
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-6);
+  }
+
+  .card__role {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-primary);
+  }
+
+  .card__title {
+    margin-top: var(--space-2);
+    font-size: var(--text-xl);
+  }
+
+  /* The whole card is clickable through this stretched link */
+  .card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .card__link:focus-visible {
+    outline: none;
+  }
+
+  .card:has(.card__link:focus-visible) {
+    outline: 2px dashed var(--color-accent);
+    outline-offset: 4px;
+  }
+
+  .card__summary {
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+
+  .card__cta {
+    margin-top: auto;
+    padding-top: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  /* Featured: media and text side by side on wide screens */
+  @media (min-width: 900px) {
+    .card--featured {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+    }
+
+    .card--featured .card__bar {
+      grid-column: 1 / -1;
+    }
+
+    .card--featured .card__media {
+      aspect-ratio: auto;
+      min-height: 22rem;
+      border-bottom: none;
+      border-right: 2px solid var(--color-line-strong);
+    }
+
+    .card--featured .card__body {
+      padding: var(--space-8);
+    }
+
+    .card--featured .card__title {
+      font-size: var(--text-2xl);
+    }
+
+    .card--featured .card__summary {
+      font-size: var(--text-base);
+    }
+  }
+</style>

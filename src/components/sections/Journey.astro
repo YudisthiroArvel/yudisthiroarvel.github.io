@@ -1,0 +1,194 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import Window from "../ui/Window.astro";
+import { education, milestones } from "../../data/journey";
+---
+
+<section class="section" id="journey" aria-labelledby="journey-title">
+  <div class="container">
+    <SectionHeading id="journey-title" index="03" label="journey" title="The road" accent="so far" />
+
+    <div class="journey">
+      <div class="journey__edu" data-reveal>
+        <Window title="education.log">
+          <p class="edu__label">// currently studying</p>
+          <p class="edu__school">{education.school}</p>
+          <p class="edu__program">{education.program}</p>
+          <dl class="edu__meta">
+            <div>
+              <dt>status</dt>
+              <dd>{education.status}</dd>
+            </div>
+            <div>
+              <dt>focus</dt>
+              <dd>{education.focus}</dd>
+            </div>
+          </dl>
+        </Window>
+      </div>
+
+      <ol class="timeline" role="list">
+        {
+          milestones.map((milestone) => (
+            <li class={`milestone milestone--${milestone.kind}`} data-reveal>
+              <span class="milestone__node" aria-hidden="true" />
+              <p class="milestone__date">{milestone.date}</p>
+              <h3 class="milestone__title">
+                {milestone.href ? (
+                  <a href={milestone.href}>
+                    {milestone.title} <span aria-hidden="true">→</span>
+                  </a>
+                ) : (
+                  milestone.title
+                )}
+              </h3>
+              <p class="milestone__text">{milestone.description}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .journey {
+    display: grid;
+    gap: var(--space-12);
+  }
+
+  @media (min-width: 960px) {
+    .journey {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    .journey__edu {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-8));
+    }
+  }
+
+  .edu__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-subtle);
+  }
+
+  .edu__school {
+    margin-top: var(--space-3);
+    font-family: var(--font-pixel);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--color-accent);
+  }
+
+  .edu__program {
+    margin-top: var(--space-1);
+    font-size: var(--text-lg);
+    font-weight: 600;
+  }
+
+  .edu__meta {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 2px dashed var(--color-line-strong);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .edu__meta div {
+    display: flex;
+    gap: 1ch;
+  }
+
+  .edu__meta dt {
+    color: var(--color-primary);
+  }
+
+  .edu__meta dt::after {
+    content: ":";
+  }
+
+  .edu__meta dd {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  /* ---------- Timeline ---------- */
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: var(--space-10);
+    padding-left: var(--space-10);
+  }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    left: 0.45rem;
+    border-left: 2px dashed var(--color-line-strong);
+  }
+
+  .milestone {
+    position: relative;
+  }
+
+  .milestone__node {
+    position: absolute;
+    top: 0.3rem;
+    left: calc(-1 * var(--space-10));
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--color-bg);
+    background: var(--node-color, var(--color-primary));
+    box-shadow: 0 0 0 2px var(--node-color, var(--color-primary));
+  }
+
+  .milestone--now {
+    --node-color: var(--color-accent);
+  }
+
+  .milestone--now .milestone__node {
+    animation: blink 1.6s steps(1) infinite;
+  }
+
+  .milestone--achievement {
+    --node-color: var(--color-pink);
+  }
+
+  .milestone--education {
+    --node-color: var(--color-text);
+  }
+
+  .milestone__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--node-color, var(--color-primary));
+  }
+
+  .milestone__title {
+    margin-top: var(--space-1);
+    font-size: var(--text-xl);
+  }
+
+  .milestone__title a {
+    transition: color var(--duration-fast);
+  }
+
+  .milestone__title a:hover {
+    color: var(--color-accent);
+  }
+
+  .milestone__text {
+    margin-top: var(--space-2);
+    max-width: 52ch;
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+interface Props {
+  /** Used for aria-labelledby on the parent section */
+  id: string;
+  index: string;
+  label: string;
+  title: string;
+  /** Optional last word(s) rendered in the pixel accent style */
+  accent?: string;
+  description?: string;
+}
+
+const { id, index, label, title, accent, description } = Astro.props;
+---
+
+<header class="heading" data-reveal>
+  <p class="heading__label"><span>{index}</span> // {label}</p>
+  <h2 id={id} class="heading__title">
+    {accent ? `${title} ` : title}{accent && <span class="text-pixel">{accent}</span>}
+  </h2>
+  {description && <p class="heading__description">{description}</p>}
+</header>
+
+<style>
+  .heading {
+    max-width: 46rem;
+    margin-bottom: var(--space-12);
+  }
+
+  .heading__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-primary);
+  }
+
+  .heading__label span {
+    color: var(--color-accent);
+  }
+
+  .heading__title {
+    margin-top: var(--space-3);
+    font-size: var(--text-3xl);
+    letter-spacing: -0.035em;
+  }
+
+  .heading__description {
+    margin-top: var(--space-4);
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+</style>
